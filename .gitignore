@@ -10,3 +10,4 @@ build/
 gradle.properties
 gradle/
 local.properties
+/local.properties

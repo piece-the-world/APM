@@ -1,0 +1,79 @@
+apply plugin: 'java'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+jar{
+    from project.zipTree("libs/ntes_analysis_plugin-1.2.3.jar")
+}
+
+//task shellJar(type: Jar) {
+//    archiveName 'ntes_analysis_plugin.jar'
+//    from project.zipTree("libs/ntes_analysis_plugin-1.2.3.jar")
+//    destinationDir = file('build/libs')
+//    classifier = 'sources'
+//}
+
+group = 'com.netease.lede'
+version = "4.0.2"
+def siteUrl = 'https://github.com/piece-the-world/APM'    // 项目主页
+def gitUrl = 'https://github.com/piece-the-world/APM.git' // 项目的git地址
+def module_name = 'ntes_analysis_plugin'	// 项目的名称
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                name 'ntes_analysis_plugin' // 名称
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0' // 开源协议名称
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt' // 协议地址
+                    }
+                }
+                developers {
+                    developer {
+                        id 'best-apm'	// 账号
+                        name 'best-apm'	// 名称
+                        email 'taochao@corp.netease.com' // 邮箱地址
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+artifacts {
+    archives jar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    // 读取配置文件中的用户名和key
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = "maven"		// 你在bintray上创建的库的名称
+        name = module_name               // 在jcenter中的项目名称
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
