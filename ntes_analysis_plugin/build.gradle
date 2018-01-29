@@ -21,7 +21,7 @@ jar{
 //}
 
 group = 'com.netease.lede'
-version = "4.0.2"
+version = "1.2.3"
 def siteUrl = 'https://github.com/piece-the-world/APM'    // 项目主页
 def gitUrl = 'https://github.com/piece-the-world/APM.git' // 项目的git地址
 def module_name = 'ntes_analysis_plugin'	// 项目的名称
