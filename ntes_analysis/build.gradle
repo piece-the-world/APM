@@ -1,0 +1,107 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion "26.0.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+//    compile 'com.netease.lede:ntes_analysis:4.0.2@aar'
+    compile (name:'ntes_analysis-4.0.2',ext:'aar')
+}
+
+group = 'com.netease.lede'
+version = "4.0.2"
+def siteUrl = 'https://github.com/piece-the-world/APM'    // 项目主页
+def gitUrl = 'https://github.com/piece-the-world/APM.git' // 项目的git地址
+def module_name = 'ntes_analysis'	// 项目的名称
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                name 'ntes_analysis' // 名称
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0' // 开源协议名称
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt' // 协议地址
+                    }
+                }
+                developers {
+                    developer {
+                        id 'best-apm'	// 账号
+                        name 'best-apm'	// 名称
+                        email 'taochao@corp.netease.com' // 邮箱地址
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    // 读取配置文件中的用户名和key
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = "maven"		// 你在bintray上创建的库的名称
+        name = module_name               // 在jcenter中的项目名称
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
+
+task deleteAAR(type: Delete) {
+    delete fileTree(dir: 'build/outputs/aar', include: '*.aar')
+//    System.out.println("delete plugin folder !")
+}
+
+task copyAAR(type: org.gradle.api.tasks.Copy) {
+    from 'libs'
+    into 'build/outputs/aar'
+    include 'ntes_analysis-4.0.2.aar'
+    rename('ntes_analysis-4.0.2.aar','ntes_analysis-release.aar')
+}
+
+//deleteAAR.dependsOn install
+copyAAR.dependsOn deleteAAR
+install.dependsOn copyAAR

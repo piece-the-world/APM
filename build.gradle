@@ -17,6 +17,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url "http://mvn.ms.netease.com/nexus/content/repositories/netease-lede" }
+        flatDir{
+            dirs 'libs'
+        }
     }
 }
 

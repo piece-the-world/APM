@@ -1,1 +1,1 @@
-include ':app', ':ntes_analysis_plugin'
+include ':app', ':ntes_analysis_plugin', ':ntes_analysis'
