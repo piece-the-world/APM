@@ -22,9 +22,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile 'com.netease.lede:ntes_analysis:4.0.2@aar'
-    compile (name:'ntes_analysis-4.0.2',ext:'aar')
 }
 
 group = 'com.netease.lede'
